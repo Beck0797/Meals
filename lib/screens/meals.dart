@@ -5,17 +5,16 @@ import 'package:meals/widgets/meal_item.dart';
 import '../models/meal.dart';
 
 class MealsScreen extends StatelessWidget {
-  const MealsScreen({super.key, required this.title, required this.meals});
+  const MealsScreen({super.key, this.title, required this.meals});
 
-  final String title;
+  final String? title;
   final List<Meal> meals;
 
   void selectMeal(BuildContext context, Meal meal) {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (cnt) =>
-                MealDetailsScreen(
+            builder: (cnt) => MealDetailsScreen(
                   meal: meal,
                 )));
   }
@@ -28,26 +27,18 @@ class MealsScreen extends StatelessWidget {
         children: [
           Text(
             "Uh oh ... nothing here!",
-            style: Theme
-                .of(context)
+            style: Theme.of(context)
                 .textTheme
                 .headlineLarge!
-                .copyWith(color: Theme
-                .of(context)
-                .colorScheme
-                .onBackground),
+                .copyWith(color: Theme.of(context).colorScheme.onBackground),
           ),
           const SizedBox(height: 16),
           Text(
             "Try selecting a different category!",
-            style: Theme
-                .of(context)
+            style: Theme.of(context)
                 .textTheme
                 .bodyLarge!
-                .copyWith(color: Theme
-                .of(context)
-                .colorScheme
-                .onBackground),
+                .copyWith(color: Theme.of(context).colorScheme.onBackground),
           )
         ],
       ),
@@ -55,17 +46,23 @@ class MealsScreen extends StatelessWidget {
     if (meals.isNotEmpty) {
       content = ListView.builder(
         itemCount: meals.length,
-        itemBuilder: (ctx, index) =>
-            MealItem(meal: meals[index], onSelectMeal:(meal) {
-              selectMeal(context, meal);
-            },),
+        itemBuilder: (ctx, index) => MealItem(
+          meal: meals[index],
+          onSelectMeal: (meal) {
+            selectMeal(context, meal);
+          },
+        ),
       );
     }
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
-      body: content,
-    );
+    if (title == null) {
+      return content;
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(title!),
+        ),
+        body: content,
+      );
+    }
   }
 }
